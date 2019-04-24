@@ -5,8 +5,8 @@
       <span>{{user.username}}</span>
       <span>
         <el-radio-group v-model="user.userAdmin">
-          <el-radio @change="updateUserAdmin(1)" label="1">是</el-radio>
-          <el-radio @change="updateUserAdmin(0)" label="0">否</el-radio>
+          <el-radio @change="updateUserAdmin({userId:user._id,userAdmin:1})" label="1">是</el-radio>
+          <el-radio @change="updateUserAdmin({userId:user._id,userAdmin:0})" label="0">否</el-radio>
         </el-radio-group>
       </span>
       <span>
@@ -16,7 +16,7 @@
         </el-radio-group>
       </span>
       <span>
-        <el-button type="primary" @click="updatePsw(user._id)">修改密码</el-button>
+        <el-button type="primary" @click="updatePsw(user._id)">重置密码</el-button>
       </span>
     </li>
   </ul>

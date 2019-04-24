@@ -22,7 +22,8 @@
   </el-dialog>
 </template>
 <script>
-import { movieAdd,movieUpdate} from "@/assets/js/connect";
+import { movieAdd, movieUpdate, assignOption } from "@/assets/js/connect";
+import { mapGetters } from "vuex";
 export default {
   props: ["dialogVisible", "form", "updateMovieId"],
   data() {
@@ -45,13 +46,17 @@ export default {
   mounted() {
     console.log();
   },
+  computed: {
+    ...mapGetters(["getAjaxParam"])
+  },
   methods: {
     submitForm(formName) {
       let self = this;
+      let options = self.getAjaxParam;
       self.$refs[formName].validate(valid => {
         if (valid) {
-          if (self.updateMovieId == '') {
-            movieAdd(self.form).then(res => {
+          if (self.updateMovieId == "") {
+            movieAdd(assignOption(self.form, options)).then(res => {
               if (res.data.status == 0) {
                 self.hideDialog();
                 self.$message({
@@ -67,8 +72,16 @@ export default {
               }
             });
           } else {
-            movieUpdate({movieId:self.updateMovieId,movieInfo:Object.assign(self.form,{movieTime:Date.now()})}).then(res=>{
-              if(res.data.status == 0){
+            movieUpdate(
+              assignOption(
+                {
+                  movieId: self.updateMovieId,
+                  movieInfo: Object.assign(self.form, { movieTime: Date.now() })
+                },
+                options
+              )
+            ).then(res => {
+              if (res.data.status == 0) {
                 self.$message({
                   message: res.data.message,
                   type: "success"
@@ -76,7 +89,7 @@ export default {
                 self.hideDialog();
                 self.$emit("success");
               }
-            })
+            });
           }
         } else {
           console.log("error submit!!");

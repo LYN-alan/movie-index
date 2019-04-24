@@ -42,7 +42,7 @@ export default {
   mounted() {
     let loginStatus = sessionStorage.getItem("loginStatus");
     if (loginStatus == 1) {
-      if (this.getUserInfo.username != undefined) {
+      if (this.getUserInfo != null) {
         this.ruleForm = this.getUserInfo;
         this.$nextTick(() => {
           this.submitForm("ruleForm");
@@ -69,8 +69,14 @@ export default {
                 id:userInfo[0]._id,
                 token:res.data.data.token
               };
+              let ajaxParam = {
+                username: userInfo[0].username,
+                id:userInfo[0]._id,
+                token:res.data.data.token
+              }
               sessionStorage.setItem("loginStatus", "1");
               self.commitUserInfo(saveInfo);
+              self.commitAjaxParam(ajaxParam);
               if (userInfo[0].userAdmin == 0) {
                 self.$router.push({
                   path: "/index"
@@ -97,7 +103,7 @@ export default {
     goRegister() {
       this.$router.push({ path: "/register" });
     },
-    ...mapActions(["commitUserInfo"])
+    ...mapActions(["commitUserInfo","commitAjaxParam"])
   }
 };
 </script>

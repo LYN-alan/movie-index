@@ -7,7 +7,12 @@
       <li>是否停用</li>
       <li>信息修改</li>
     </ul>
-    <userList :userList="usersList" @updateUserStop="changeUserStop"></userList>
+    <userList
+      :userList="usersList"
+      @updateUserStop="changeUserStop"
+      @updateUserAdmin="changeUserAdmin"
+      @updatePsw="resetPsw"
+    ></userList>
     <pagination
       v-if="isShowPagination"
       :pageSize="pageSize"
@@ -19,9 +24,16 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import userList from "@/components/userList";
 import pagination from "@/common/pagination";
-import { getAllUser, changeUserStop } from "@/assets/js/connect";
+import {
+  getAllUser,
+  changeUserStop,
+  changeUserAdmin,
+  resetPsw,
+  assignOption
+} from "@/assets/js/connect";
 export default {
   name: "userConfig",
   components: {
@@ -34,6 +46,9 @@ export default {
       pageSize: this.pageSize
     };
     this._getAllUser(param);
+  },
+  computed: {
+    ...mapGetters(["getAjaxParam"])
   },
   data() {
     return {
@@ -48,7 +63,8 @@ export default {
   methods: {
     _getAllUser(param) {
       let self = this;
-      getAllUser(param).then(res => {
+      let options = self.getAjaxParam;
+      getAllUser(assignOption(param,options)).then(res => {
         if (res.data.status == 0) {
           console.log(res.data.data);
           self.usersList = res.data.data;
@@ -71,7 +87,8 @@ export default {
     },
     changeUserStop(param) {
       let self = this;
-      changeUserStop(param).then(res => {
+      let options = self.getAjaxParam;
+      changeUserStop(assignOption(param, options)).then(res => {
         if (res.data.status == 0) {
           self.$message({
             message: res.data.message,
@@ -81,9 +98,52 @@ export default {
             pageNum: self.currentPage,
             pageSize: self.pageSize
           };
-          this._getAllUser(param);
+          self._getAllUser(param);
         }
       });
+    },
+    changeUserAdmin(param) {
+      let self = this;
+      let options = self.getAjaxParam;
+      changeUserAdmin(assignOption(param, options)).then(res => {
+        if (res.data.status == 0) {
+          self.$message({
+            message: res.data.message,
+            type: "success"
+          });
+          let param = {
+            pageNum: self.currentPage,
+            pageSize: self.pageSize
+          };
+          self._getAllUser(param);
+        }
+      });
+    },
+    resetPsw(id) {
+      let self = this;
+      let options = self.getAjaxParam;
+      this.$prompt("请输入新密码", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /[0-9]/,
+        inputErrorMessage: "密码格式不正确"
+      }).then(({ value }) => {
+        resetPsw(assignOption({ userId: id,newPassword:value}, options)).then(res => {
+          if (res.data.status == 0) {
+            self.$message({
+              type: "success",
+              message: res.data.message
+            });
+          } else {
+            self.$message({
+              type: "error",
+              message: res.data.message
+            });
+          }
+        });
+      }).catch(() => {
+           console.log('cancel')
+        });
     }
   }
 };

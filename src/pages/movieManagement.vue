@@ -30,10 +30,16 @@
   </div>
 </template>
 <script>
-import { getMovies, getMovieDetail, movieDel } from "@/assets/js/connect";
+import {
+  getMovies,
+  getMovieDetail,
+  movieDel,
+  assignOption
+} from "@/assets/js/connect";
 import MoviesList from "@/components/moviesList";
 import MovieAdd from "@/components/movieAdd";
 import pagination from "@/common/pagination";
+import {mapGetters} from "vuex";
 export default {
   name: "movieManagement",
   components: {
@@ -57,6 +63,9 @@ export default {
         movieMainPage: false
       }
     };
+  },
+  computed: {
+    ...mapGetters(["getAjaxParam"])
   },
   mounted() {
     let param = {
@@ -99,7 +108,8 @@ export default {
     removeMovie(id) {
       //删除操作
       let self = this;
-      movieDel({ movieId: id }).then(res => {
+      let options = self.getAjaxParam;
+      movieDel(assignOption({ movieId: id },options)).then(res => {
         if (res.data.status == 0) {
           self.$message({
             message: res.data.message,
@@ -123,7 +133,8 @@ export default {
     },
     _getMovieDetail(id) {
       let self = this;
-      getMovieDetail(id).then(res => {
+      let options = self.getAjaxParam;
+      getMovieDetail(assignOption(id,options)).then(res => {
         if (res.data.status == 0) {
           self.updateMovieDetail = res.data.data[0];
           self.form = Object.assign(self.form, res.data.data[0]);
@@ -132,7 +143,7 @@ export default {
       });
     },
     handleSizeChange(param) {
-      console.log(param)
+      console.log(param);
       this.pageSize = param.pageSize;
       this._getMovies(param);
     },

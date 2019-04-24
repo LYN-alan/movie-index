@@ -14,8 +14,14 @@ export default {
     saveState() {
       if (this.$store.state.userInfo) {
         sessionStorage.setItem(
-          "state",
+          "userInfo",
           JSON.stringify(this.$store.state.userInfo)
+        );
+      }
+      if (this.$store.state.ajaxParam) {
+        sessionStorage.setItem(
+          "ajaxParam",
+          JSON.stringify(this.$store.state.ajaxParam)
         );
       }
     }

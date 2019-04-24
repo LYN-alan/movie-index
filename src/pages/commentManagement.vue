@@ -26,7 +26,13 @@
 <script>
 import commentsList from "@/components/commentsList";
 import pagination from "@/common/pagination";
-import { getAllComment, checkComment,delComment} from "@/assets/js/connect";
+import {mapGetters} from "vuex";
+import {
+  getAllComment,
+  checkComment,
+  delComment,
+  assignOption
+} from "@/assets/js/connect";
 export default {
   name: "commentManagement",
   components: {
@@ -40,7 +46,7 @@ export default {
       pageSizes: [10, 15, 20, 30],
       pageSize: 10,
       totalPage: 0,
-      isShowPagination:false
+      isShowPagination: false
     };
   },
   mounted() {
@@ -50,6 +56,9 @@ export default {
     };
     this._getAllcomment(param);
   },
+  computed: {
+    ...mapGetters(["getAjaxParam"])
+  },
   methods: {
     _getAllcomment(param) {
       let self = this;
@@ -57,9 +66,10 @@ export default {
         if (res.data.status == 0) {
           self.commentsList = res.data.data;
           self.totalPage = res.data.totalPage;
-          self.isShowPagination = self.totalPage >0&& self.totalPage>self.pageSize? true:false;
-          if(self.totalPage==0){
-              self.$message('暂无任何评论信息');
+          self.isShowPagination =
+            self.totalPage > 0 && self.totalPage > self.pageSize ? true : false;
+          if (self.totalPage == 0) {
+            self.$message("暂无任何评论信息");
           }
         }
       });
@@ -69,7 +79,8 @@ export default {
         commentId: data
       };
       let self = this;
-      checkComment(param).then(res => {
+      let options = self.getAjaxParam
+      checkComment(assignOption(param,options)).then(res => {
         if (res.data.status == 0) {
           this.$message({
             type: "success",
@@ -86,16 +97,21 @@ export default {
     deleteComment(val) {
       let commentId = val;
       let self = this;
-      self.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delComment({commentId:commentId}).then(res=>{
-            if(res.data.status == 0){
+      let options = self.getAjaxParam
+      self
+        .$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          delComment(
+            assignOption({ commentId: commentId},options)
+          ).then(res => {
+            if (res.data.status == 0) {
               self.$message({
-                type: 'success',
-                message: '删除成功!'
+                type: "success",
+                message: "删除成功!"
               });
               let param = {
                 pageNum: self.currentPage,
@@ -103,11 +119,12 @@ export default {
               };
               self._getAllcomment(param);
             }
-          })
-        }).catch(() => {
+          });
+        })
+        .catch(() => {
           self.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除"
           });
         });
     },
