@@ -73,6 +73,16 @@ export function resetPsw(param){
     let url = host + '/admin/changeUser';
     return axios.post(url,param)
 }
+//获取上传图片到七牛云的token
+export function getUploadToken(param){
+    let url = host + '/admin/getUploadToken';
+    return axios.post(url,param);
+}
+//保存文章
+export function addArticle(param){
+    let url = host + '/admin/addArticle';
+    return axios.post(url,param)
+}
 export function assignOption(options,data){
     return Object.assign(options,data)
 }
