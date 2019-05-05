@@ -28,6 +28,7 @@ export default {
 .comment_list>li{
     display: flex;
     align-items: center;
+    margin: 10px 0;
 }
 .comment_list>li span{
     width: 10%;
