@@ -11,6 +11,8 @@ import commentManagement from '@/pages/commentManagement'
 import articleManagement from '@/pages/articleManagement'
 import userManagement from '@/pages/userManagement'
 import indexConfig from '@/pages/indexConfig'
+import articleList from '@/components/articleList'
+import articleEditor from '@/components/articleEditor'
 Vue.use(Router)
 export default new Router({
   routes: [{
@@ -49,7 +51,20 @@ export default new Router({
         {
           path: '/admin/article',
           name: 'articleManagement',
-          component: articleManagement
+          component: articleManagement,
+          redirect:'/admin/article/articleList',
+          children:[
+            {
+              path:'articleList',
+              name:'articleList',
+              component:articleList
+            },
+            {
+              path:'articleEditor',
+              name:'articleEditor',
+              component:articleEditor
+            }
+          ]
         },
         //后台用户管理
         {

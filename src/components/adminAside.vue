@@ -9,7 +9,7 @@
 </template>
 <script>
 export default {
-    
+    name:"adminAsize"
 }
 </script>
 <style scoped>

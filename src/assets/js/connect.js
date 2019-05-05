@@ -68,11 +68,41 @@ export function changeUserAdmin(param){
     return axios.post(url,param)
 
 }
-//后台更新用户登录密码
-export function resetPsw(param){
-    let url = host + '/admin/changeUser';
-    return axios.post(url,param)
+// 后台更新用户登录密码
+export function resetPsw (param) {
+  let url = host + '/admin/changeUser'
+  return axios.post(url, param)
 }
-export function assignOption(options,data){
-    return Object.assign(options,data)
+// 获取上传图片到七牛云的token
+export function getUploadToken (param) {
+  let url = host + '/admin/getUploadToken'
+  return axios.post(url, param)
+}
+// 保存文章
+export function addArticle (param) {
+  let url = host + '/admin/addArticle'
+  return axios.post(url, param)
+}
+// 分页获取所有文章
+export function getArticle (param) {
+  let url = host + '/admin/getArticle'
+  return axios.post(url, param)
+}
+// 文章列表删除
+export function articleDelete (param) {
+  let url = host + '/admin/articleDelete'
+  return axios.post(url, param)
+}
+// 根据文章id获取文章
+export function getArticleDetail (param) {
+  let url = host + '/admin/getArticleById'
+  return axios.post(url, param)
+}
+// 文章重新编辑发布
+export function articleUpdate (param) {
+  let url = host + '/admin/articleUpdate'
+  return axios.post(url, param)
+}
+export function assignOption (options, data) {
+  return Object.assign(options, data)
 }

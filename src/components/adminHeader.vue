@@ -11,7 +11,7 @@
 <script>
 import {mapActions} from 'vuex';
 export default {
-    props:['userInfo'],
+    props:["userInfo"],
     mounted () {
         console.log(this.userInfo)
     },
